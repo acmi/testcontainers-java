@@ -116,7 +116,8 @@ public class BrowserWebDriverContainer<SELF extends BrowserWebDriverContainer<SE
 
             vncRecordingContainer = new VncRecordingContainer(this)
                     .withVncPassword(DEFAULT_PASSWORD)
-                    .withVncPort(VNC_PORT);
+                    .withVncPort(VNC_PORT)
+                    .withHiddenMousePointer(true);
         }
 
         if (!customImageNameIsSet) {

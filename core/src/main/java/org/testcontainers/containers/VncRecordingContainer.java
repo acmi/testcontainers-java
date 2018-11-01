@@ -42,6 +42,8 @@ public class VncRecordingContainer extends GenericContainer<VncRecordingContaine
 
     private int frameRate = 30;
 
+    private boolean hiddenMousePointer = false;
+
     public VncRecordingContainer(@NonNull GenericContainer<?> targetContainer) {
         this(
                 targetContainer.getNetwork(),
@@ -109,13 +111,18 @@ public class VncRecordingContainer extends GenericContainer<VncRecordingContaine
         return this;
     }
 
+    public VncRecordingContainer withHiddenMousePointer(boolean hiddenMousePointer) {
+        this.hiddenMousePointer = hiddenMousePointer;
+        return this;
+    }
+
     @Override
     protected void configure() {
         withCreateContainerCmdModifier(it -> it.withEntrypoint("/bin/sh"));
         setCommand(
                 "-c",
                 "echo '" + Base64.encodeBase64String(vncPassword.getBytes()) + "' | base64 -d > /vnc_password && " +
-                        "flvrec.py -o " + RECORDING_FILE_NAME + " -d -r " + frameRate + " -P /vnc_password " + targetNetworkAlias + " " + vncPort
+                        "flvrec.py -o " + RECORDING_FILE_NAME + " -d -r " + frameRate + " -P /vnc_password " + (hiddenMousePointer ? "-N " : "") + targetNetworkAlias + " " + vncPort
         );
     }
 
